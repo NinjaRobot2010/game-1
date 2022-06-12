@@ -9,7 +9,7 @@ var random = 0;
 // var i3 = 0;
 
 var hero = {
-  x: canvas.width/2-75,
+  x: canvas.width / 2 - 75,
   y: 150,
   w: 150,
   h: 150,
@@ -17,11 +17,10 @@ var hero = {
   sprite: new Image()
 }
 
-
 var defaultEnemy = {
   w: 100,
   h: 250,
-  s: 40
+  s: 35
 }
 
 var enemyOne = {
@@ -50,7 +49,7 @@ var enemyThree = {
 
 
 // Frames per second
-var frames = 30;
+var frames = 60;
 
 // Event listener to move player
 document.addEventListener("keydown", key);
@@ -64,24 +63,24 @@ function key(event){
   //Key D
   if (event.keyCode === 68 ) {
     if (check < 3) {
-      check = check+1 ;
-      arrowX = arrowX + 1900/3;
+      check = check + 1 ;
+      hero.x = hero.x + 1900 / 3;
     }
   }
 
   //Key A
   if (event.keyCode === 65) {
     if (check > 1) {
-      check = check-1;
-      arrowX = arrowX - 1900/3;
+      check = check - 1;
+      hero.x = hero.x - 1900 / 3;
     }
   }
 
   // Left arrow
   if (event.keyCode === 37 ) {
     if (check > 1) {
-      check = check-1;
-      arrowX = arrowX - 1900/3;
+      check = check - 1;
+      hero.x = hero.x - 1900 / 3;
     }
   }
 
@@ -89,7 +88,7 @@ function key(event){
   if (event.keyCode === 39) {
     if (check < 3) {
       check = check + 1 ;
-      arrowX = arrowX + 1900/3;
+      hero.x = hero.x + 1900 / 3;
     }
   }
 }
@@ -106,8 +105,7 @@ function key(event){
 
 // Returns a random integer
 function getRandomNum() {
-  // return Math.floor(Math.random() * 3) + 1;
-  return 2;
+  return Math.floor(Math.random() * 3) + 1;
 } 
 
 
@@ -161,11 +159,11 @@ var startBlocks = setInterval(function() {
     }
     
 
-},1000);
+}, 1200);
 
 //Changes the positions of the objects for every frame
 function frameChange() {
-  var stop = setInterval(function() {
+  var startGame = setInterval(function() {
 
     //Clears canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -177,7 +175,7 @@ function frameChange() {
     //Draws score
     ctx.fillStyle = "white";
     ctx.font = "75px Arial";
-    ctx.fillText("Score: "+score,75,100);
+    ctx.fillText("Score: " + score, 75, 100);
 
     //Draws obstacles 
     square(enemyOne.x, enemyOne.y, enemyOne.w, enemyOne.h);
@@ -185,8 +183,21 @@ function frameChange() {
     square(enemyThree.x, enemyThree.y, enemyThree.w, enemyThree.h);
 
 
-    if (Math.abs(enemyTwo.x - hero.x) < 150/2 && Math.abs(enemyTwo.y - hero.y) < 250/2) {
-      clearInterval(stop);
+    if (Math.abs(hero.x - enemyOne.x) <= hero.w && 
+        Math.abs(hero.y - enemyOne.y) <= hero.h) {
+      clearInterval(startGame);
+      clearInterval(startBlocks);
+    }
+
+    if (Math.abs(hero.x - enemyTwo.x) <= hero.w && 
+        Math.abs(hero.y - enemyTwo.y) <= hero.h) {
+      clearInterval(startGame);
+      clearInterval(startBlocks);
+    }
+
+    if (Math.abs(hero.x - enemyThree.x) <= hero.w && 
+        Math.abs(hero.y - enemyThree.y) <= hero.h) {
+      clearInterval(startGame);
       clearInterval(startBlocks);
     }
 
