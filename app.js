@@ -1,187 +1,213 @@
 var canvas = document.getElementById("Game");
-       var ctx = canvas.getContext("2d");
-       var arrow = new Image();
+var ctx = canvas.getContext("2d");
 
-       // Player's X coordnates 
-       var arrowX = canvas.width/2-75;
+// Variable to trigger  3 different obstacles randomly 
+var random = 0;
 
-       //Player's Y coordnates
-       var arrowY = 150;
+// var i1 = 0;
+// var i2 = 0;
+// var i3 = 0;
 
-       //Variable to trigger  3 different obstacles randomly 
-       var random = 0;
+var hero = {
+  x: canvas.width / 2 - 75,
+  y: 150,
+  w: 150,
+  h: 150,
+  fill: 'Red',
+  sprite: new Image()
+}
 
-      var i1 = 0;
-      var i2 = 0;
-      var i3 = 0;
-      //Obstacle's X coordnate 
-      var squareX1 = canvas.width/6-50;
-      var squareX2 = canvas.width/2-50;
-      var squareX3 = canvas.width/6*5-50;
+var defaultEnemy = {
+  w: 100,
+  h: 250,
+  s: 35
+}
 
-      //Obstacle's Y coordnate 
-      var squareY1 = 910;
-      var squareY2 = 910;
-      var squareY3 = 910;
+var enemyOne = {
+  x: canvas.width / 6 - 50,
+  y: canvas.height,
+  w: defaultEnemy.w,
+  h: defaultEnemy.h,
+  s: defaultEnemy.s
+}
 
-      //Frames per second
-      var frames = 75;
+var enemyTwo = {
+  x: canvas.width / 2 - 50,
+  y: canvas.height,
+  w: defaultEnemy.w,
+  h: defaultEnemy.h,
+  s: defaultEnemy.s
+}
+
+var enemyThree = {
+  x: canvas.width / 6 * 5 - 50,
+  y: canvas.height,
+  w: defaultEnemy.w,
+  h: defaultEnemy.h,
+  s: defaultEnemy.s
+}
+
+
+// Frames per second
+var frames = 60;
+
+// Event listener to move player
+document.addEventListener("keydown", key);
+
+var check = 2;
+
+//Keys to move player
+function key(event){
+  console.log(check);
+
+  //Key D
+  if (event.keyCode === 68 ) {
+    if (check < 3) {
+      check = check + 1 ;
+      hero.x = hero.x + 1900 / 3;
+    }
+  }
+
+  //Key A
+  if (event.keyCode === 65) {
+    if (check > 1) {
+      check = check - 1;
+      hero.x = hero.x - 1900 / 3;
+    }
+  }
+
+  // Left arrow
+  if (event.keyCode === 37 ) {
+    if (check > 1) {
+      check = check - 1;
+      hero.x = hero.x - 1900 / 3;
+    }
+  }
+
+  // Right arrow
+  if (event.keyCode === 39) {
+    if (check < 3) {
+      check = check + 1 ;
+      hero.x = hero.x + 1900 / 3;
+    }
+  }
+}
+
+
     
-      //Event listener to move player
-     document.addEventListener("keydown", key);
-     
+  // Function to draw squares
+  function square(x,y,w,h) {
+    ctx.fillStyle = "MediumBlue";
+    ctx.strokeStyle = "MediumBlue";
+    ctx.fillRect(x,y,w,h);
+  }
 
-     var check = 2;
-     
-     //Keys to move player
-     function key(event){
-       console.log(check);
+
+// Returns a random integer
+function getRandomNum() {
+  return Math.floor(Math.random() * 3) + 1;
+} 
+
+
+//Triggers obstacles to move
+var startBlocks = setInterval(function() {
+
+    //Changes the random variable
+    var random = getRandomNum();
+    console.log(random);
+
+    //Triggers when random = 1
+    if (random === 1) {
+      enemyOne.y = canvas.height;
       
-       //Key D
-       if(event.keyCode === 68 ) {
-         if (check < 3) {
-           check = check+1 ;
-           arrowX = arrowX + 1900/3;
-           }
-         }
+      var interval1 = setInterval(function() {
+        if (enemyOne.y + enemyOne.h <= 0) {
+          clearInterval(interval1);
+        } 
+        
+        enemyOne.y -= enemyOne.s;
+
+      }, 30);
+    }
+
+    //Triggers when random = 2
+    if (random === 2) {
+      enemyTwo.y = canvas.height;
       
-       //Key A
-       if (event.keyCode === 65) {
-         if(check > 1) {
-           check = check-1;
-           arrowX = arrowX - 1900/3;
-         }
-       }
+      var interval2 = setInterval(function() {
+        if (enemyTwo.y + enemyTwo.h <= 0) {
+          clearInterval(interval2);
+        } 
+        
+        enemyTwo.y -= enemyTwo.s;
 
-       //Left arrow
-       if(event.keyCode === 37 ) {
-        if(check > 1) {
-           check = check-1;
-           arrowX = arrowX - 1900/3;
-         }
-         }
+      }, 30);
+    }
 
-         //Right arrow
-         if (event.keyCode === 39) {
-          if (check < 3) {
-           check = check+1 ;
-           arrowX = arrowX + 1900/3;
-           }
-       }
-     }
-
-
-         
-       //Function to draw squares
-       function square(x,y,w,h){
-         ctx.fillStyle = "MediumBlue";
-         ctx.strokeStyle = "MediumBlue";
-         ctx.fillRect(x,y,w,h);
-       }
+    //Triggers when random = 3
+    if (random === 3) {
+      enemyThree.y = canvas.height;
       
-      //sets random variable
-      var random = Math.floor(Math.random() * 3) + 1;
-      
-        function pause(){
-        }
-      
-      //Triggers obstacles to move
-      setInterval(function(){
+      var interval3 = setInterval(function() {
+        if (enemyThree.y + enemyThree.h <= 0) {
+          clearInterval(interval3);
+        } 
+        
+        enemyThree.y -= enemyThree.s;
 
-         //Changes the random variable
-         random = Math.floor(Math.random() * 3) + 1;
+      }, 30);
+    }
+    
 
-          if (random === 1) {
-            //Triggers when random = 1
-            squareY1 = 910;
-            
-            i1 = 0;
-              var interval1 = setInterval(function(){
-                if(i1 < 30){
-              squareY1 = squareY1 - canvas.height/18;
-              i1++;
-                }else{
-                  clearInterval(interval1);
-                }
-               },30);
+}, 1200);
+
+//Changes the positions of the objects for every frame
+function frameChange() {
+  var startGame = setInterval(function() {
+
+    //Clears canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    //Draws player
+    ctx.fillStyle = hero.fill;
+    ctx.fillRect(hero.x, hero.y, hero.w, hero.h);
+
+    //Draws score
+    ctx.fillStyle = "white";
+    ctx.font = "75px Arial";
+    ctx.fillText("Score: " + score, 75, 100);
+
+    //Draws obstacles 
+    square(enemyOne.x, enemyOne.y, enemyOne.w, enemyOne.h);
+    square(enemyTwo.x, enemyTwo.y, enemyTwo.w, enemyTwo.h);
+    square(enemyThree.x, enemyThree.y, enemyThree.w, enemyThree.h);
 
 
-        }
-         if (random === 2) {
-           //Triggers when random = 2
-          squareY2 = 910;
-              i2 = 0;
-              var interval2 = setInterval(function(){
-                if(i2 < 30){
-              squareY2 = squareY2 - canvas.height/18;
-              i2++;
-                }else{
-                  clearInterval(interval2);
-                }
-               },30);
+    if (Math.abs(hero.x - enemyOne.x) <= hero.w && 
+        Math.abs(hero.y - enemyOne.y) <= hero.h) {
+      clearInterval(startGame);
+      clearInterval(startBlocks);
+    }
 
-             squareY2 = 910;
-         }
-         if (random === 3) {
-           //Triggers when random = 3
-          squareY3 = 910;
-          i3 = 0;
-              var interval3 = setInterval(function(){
-                if(i3 < 30){
-              squareY3 = squareY3 - canvas.height/18;
-              i3++;
-                }else{
-                  clearInterval(interval3);
-                }
-               },30);
+    if (Math.abs(hero.x - enemyTwo.x) <= hero.w && 
+        Math.abs(hero.y - enemyTwo.y) <= hero.h) {
+      clearInterval(startGame);
+      clearInterval(startBlocks);
+    }
 
-         }
-          console.log(random);
-          console.log(squareY1);
-      },1000);
-  
-      //Changes the positions of the objects for every frame
-     function frameChange(){
+    if (Math.abs(hero.x - enemyThree.x) <= hero.w && 
+        Math.abs(hero.y - enemyThree.y) <= hero.h) {
+      clearInterval(startGame);
+      clearInterval(startBlocks);
+    }
 
-       var stop = setInterval(function(){
+  }, 1000 / frames);
+}
 
-          //Clears canvas
-          ctx.clearRect(0,0,canvas.width,canvas.height);
+frameChange();
 
-          //Draws player
-          ctx.fillStyle = "Red";
-          ctx.fillRect(arrowX,arrowY,150,150);
-
-          //Draws score
-          ctx.fillStyle = "white";
-          ctx.font = "75px Arial";
-          ctx.fillText("Score: "+score,75,100);
-
-          //Draws obstacles 
-          square(squareX1,squareY1,100,250);
-          square(squareX2,squareY2,100,250);
-          square(squareX3,squareY3,100,250);
-
-          if (Math.abs(squareX1 - arrowX) < 150/2 && Math.abs(squareY1 - arrowY) < 250/2){
-            clearInterval(stop);
-          }
-          //if (Math.abs (squareX2 - arrowX) < 150/2 && Math.abs (squareY2 - arrowY) < 150/2){
-           // clearInterval(stop);
-          //}
-          if (Math.abs(squareX3 - arrowX) < 100/2 && Math.abs(squareY3 - arrowY) < 250/2){
-            clearInterval(stop);
-          }
-          if (Math.abs(squareX2 - arrowX) < 100/2 && Math.abs(squareY2 - arrowY) < 250/2){
-            clearInterval(stop);
-        }
-
-       },1000/frames);
-     }
-     
-     frameChange();
-
-    //Changes score by 1 every 0.5 seconds
-     var score = 0;
-     setInterval(function(){
-       score += 1
-     },500);
+//Changes score by 1 every 0.5 seconds
+var score = 0;
+setInterval(function() {
+  score += 1
+}, 500);
