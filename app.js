@@ -1,13 +1,21 @@
-var canvas = document.getElementById("Game");
-var ctx = canvas.getContext("2d");
+const canvas = document.getElementById("Game");
+const ctx = canvas.getContext("2d");
 
-var hero = {
+const hero = {
   x: canvas.width / 2 - 75,
   y: 150,
   w: 150,
   h: 150,
   fill: 'Red',
-  sprite: new Image()
+}
+
+const score = {
+  points: 0,
+  x: 20,
+  y: 50,
+  color: 'white',
+  fontSize: 48,
+  fontFamily: 'Arial'
 }
 
 class Enemy {
@@ -74,7 +82,7 @@ function key(event){
 }
 
 
-// Returns a random integer
+// Returns a random integer from 1 - 3
 function getRandomNum() {
   return Math.floor(Math.random() * 3) + 1;
 } 
@@ -88,7 +96,7 @@ function spawnEnemies() {
     const y = canvas.height;
     const w = 100;
     const h = 250;
-    const v = 10;
+    const v = 15;
     
     const column = getRandomNum();
     switch(column) {
@@ -120,10 +128,11 @@ function animate() {
   ctx.fillRect(hero.x, hero.y, hero.w, hero.h);
 
   // Draws score
-  // ctx.fillStyle = "white";
-  // ctx.font = "75px Arial";
-  // ctx.fillText("Score: " + score, 75, 100);
+  ctx.fillStyle = score.color;
+  ctx.font = `${score.fontSize}px ${score.fontFamily}`;
+  ctx.fillText(`Score: ${score.points}`, score.x, score.y);
 
+  // Loops through enemies array
   enemies.forEach((enemy, index) => {
     // Removes enemies off screen
     if (enemy.y < 0 - enemy.h) {
@@ -137,7 +146,6 @@ function animate() {
     Math.abs(hero.y - enemy.y) <= hero.h ) {
       cancelAnimationFrame(animationId);
       clearInterval(spawnInterval);
-
     }
 
     enemy.update();
@@ -147,8 +155,7 @@ function animate() {
 animate();
 spawnEnemies();
 
-//Changes score by 1 every 0.5 seconds
-// var score = 0;
-// setInterval(function() {
-//   score += 1
-// }, 500);
+// Updates score
+const scoreInterval = setInterval(() => {
+  score.points += 1
+}, 500);
