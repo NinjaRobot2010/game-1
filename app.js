@@ -17,35 +17,56 @@ var hero = {
   sprite: new Image()
 }
 
-var defaultEnemy = {
-  w: 100,
-  h: 250,
-  s: 35
+class Enemy {
+  constructor(x, y, w, h, v) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.v = v;
+  }
+
+  draw() {
+    ctx.fillStyle = "MediumBlue";
+    ctx.strokeStyle = "MediumBlue";
+    ctx.fillRect(this.x, this.y, this.w, this.h);
+  }
+  
+  update() {
+    this.draw();
+    this.y = this.y - this.v;
+  }
 }
 
-var enemyOne = {
-  x: canvas.width / 6 - 50,
-  y: canvas.height,
-  w: defaultEnemy.w,
-  h: defaultEnemy.h,
-  s: defaultEnemy.s
-}
+// var defaultEnemy = {
+//   w: 100,
+//   h: 250,
+//   s: 35
+// }
 
-var enemyTwo = {
-  x: canvas.width / 2 - 50,
-  y: canvas.height,
-  w: defaultEnemy.w,
-  h: defaultEnemy.h,
-  s: defaultEnemy.s
-}
+// var enemyOne = {
+//   x: canvas.width / 6 - 50,
+//   y: canvas.height,
+//   w: defaultEnemy.w,
+//   h: defaultEnemy.h,
+//   s: defaultEnemy.s
+// }
 
-var enemyThree = {
-  x: canvas.width / 6 * 5 - 50,
-  y: canvas.height,
-  w: defaultEnemy.w,
-  h: defaultEnemy.h,
-  s: defaultEnemy.s
-}
+// var enemyTwo = {
+//   x: canvas.width / 2 - 50,
+//   y: canvas.height,
+//   w: defaultEnemy.w,
+//   h: defaultEnemy.h,
+//   s: defaultEnemy.s
+// }
+
+// var enemyThree = {
+//   x: canvas.width / 6 * 5 - 50,
+//   y: canvas.height,
+//   w: defaultEnemy.w,
+//   h: defaultEnemy.h,
+//   s: defaultEnemy.s
+// }
 
 // Event listener to move player
 document.addEventListener("keydown", key);
@@ -91,12 +112,7 @@ function key(event){
 
 
     
-// Function to draw squares
-function square(x,y,w,h) {
-  ctx.fillStyle = "MediumBlue";
-  ctx.strokeStyle = "MediumBlue";
-  ctx.fillRect(x,y,w,h);
-}
+
 
 
 // Returns a random integer
@@ -106,57 +122,84 @@ function getRandomNum() {
 
 
 // Triggers obstacles to move
-var startBlocks = setInterval(function() {
+// var startBlocks = setInterval(function() {
 
-    // Changes the random variable
-    var random = getRandomNum();
-    console.log(random);
+//     // Changes the random variable
+//     var random = getRandomNum();
 
-    // Triggers when random = 1
-    if (random === 1) {
-      enemyOne.y = canvas.height;
+//     // Triggers when random = 1
+//     if (random === 1) {
+//       enemyOne.y = canvas.height;
       
-      var interval1 = setInterval(function() {
-        if (enemyOne.y + enemyOne.h <= 0) {
-          clearInterval(interval1);
-        } 
+//       var interval1 = setInterval(function() {
+//         if (enemyOne.y + enemyOne.h <= 0) {
+//           clearInterval(interval1);
+//         } 
         
-        enemyOne.y -= enemyOne.s;
+//         enemyOne.y -= enemyOne.s;
 
-      }, 30);
-    }
+//       }, 30);
+//     }
 
-    // Triggers when random = 2
-    if (random === 2) {
-      enemyTwo.y = canvas.height;
+//     // Triggers when random = 2
+//     if (random === 2) {
+//       enemyTwo.y = canvas.height;
       
-      var interval2 = setInterval(function() {
-        if (enemyTwo.y + enemyTwo.h <= 0) {
-          clearInterval(interval2);
-        } 
+//       var interval2 = setInterval(function() {
+//         if (enemyTwo.y + enemyTwo.h <= 0) {
+//           clearInterval(interval2);
+//         } 
         
-        enemyTwo.y -= enemyTwo.s;
+//         enemyTwo.y -= enemyTwo.s;
 
-      }, 30);
-    }
+//       }, 30);
+//     }
 
-    // Triggers when random = 3
-    if (random === 3) {
-      enemyThree.y = canvas.height;
+//     // Triggers when random = 3
+//     if (random === 3) {
+//       enemyThree.y = canvas.height;
       
-      var interval3 = setInterval(function() {
-        if (enemyThree.y + enemyThree.h <= 0) {
-          clearInterval(interval3);
-        } 
+//       var interval3 = setInterval(function() {
+//         if (enemyThree.y + enemyThree.h <= 0) {
+//           clearInterval(interval3);
+//         } 
         
-        enemyThree.y -= enemyThree.s;
+//         enemyThree.y -= enemyThree.s;
 
-      }, 30);
-    }
+//       }, 30);
+//     }
     
 
-}, 1200);
+// }, 1200);
 
+const enemies = [];
+
+function spawnEnemies() {
+  setInterval( () => {
+    let x;
+    const y = canvas.height;
+    const w = 100;
+    const h = 250;
+    const v = 10;
+    
+    const column = getRandomNum();
+    switch(column) {
+      case 1:
+        x = canvas.width / 6 - 50;
+        break;
+      case 2:
+        x = canvas.width / 2 - 50;
+        break;
+      case 3:
+        x = canvas.width / 6 * 5 - 50
+    }
+
+    enemies.push(new Enemy(x, y, w, h, v));
+
+    console.log(enemies)
+
+  }, 1000)
+}
 
 let animationId;
 
@@ -171,40 +214,47 @@ function animate() {
   ctx.fillRect(hero.x, hero.y, hero.w, hero.h);
 
   // Draws score
-  ctx.fillStyle = "white";
-  ctx.font = "75px Arial";
-  ctx.fillText("Score: " + score, 75, 100);
+  // ctx.fillStyle = "white";
+  // ctx.font = "75px Arial";
+  // ctx.fillText("Score: " + score, 75, 100);
 
-  // Draws obstacles 
-  square(enemyOne.x, enemyOne.y, enemyOne.w, enemyOne.h);
-  square(enemyTwo.x, enemyTwo.y, enemyTwo.w, enemyTwo.h);
-  square(enemyThree.x, enemyThree.y, enemyThree.w, enemyThree.h);
+  enemies.forEach((enemy, index) => {
+    enemy.update();
+    
+    // Removes enemies off screen
+    if (enemy.y < 0 - enemy.h) {
+      setTimeout(() => {
+        enemies.splice(index, 1);
+      }, 0)
+    }
 
+  })
 
-  if (Math.abs(hero.x - enemyOne.x) <= hero.w && 
-      Math.abs(hero.y - enemyOne.y) <= hero.h) {
-    cancelAnimationFrame(animationId);
-    clearInterval(startBlocks);
-  }
+  // if (Math.abs(hero.x - enemyOne.x) <= hero.w && 
+  //     Math.abs(hero.y - enemyOne.y) <= hero.h) {
+  //   cancelAnimationFrame(animationId);
+  //   clearInterval(startBlocks);
+  // }
 
-  if (Math.abs(hero.x - enemyTwo.x) <= hero.w && 
-      Math.abs(hero.y - enemyTwo.y) <= hero.h) {
-    cancelAnimationFrame(animationId);
-    clearInterval(startBlocks);
-  }
+  // if (Math.abs(hero.x - enemyTwo.x) <= hero.w && 
+  //     Math.abs(hero.y - enemyTwo.y) <= hero.h) {
+  //   cancelAnimationFrame(animationId);
+  //   clearInterval(startBlocks);
+  // }
 
-  if (Math.abs(hero.x - enemyThree.x) <= hero.w && 
-      Math.abs(hero.y - enemyThree.y) <= hero.h) {
-    cancelAnimationFrame(animationId);
-    clearInterval(startBlocks);
-  }
+  // if (Math.abs(hero.x - enemyThree.x) <= hero.w && 
+  //     Math.abs(hero.y - enemyThree.y) <= hero.h) {
+  //   cancelAnimationFrame(animationId);
+  //   clearInterval(startBlocks);
+  // }
 
 }
 
 animate();
+spawnEnemies();
 
 //Changes score by 1 every 0.5 seconds
-var score = 0;
-setInterval(function() {
-  score += 1
-}, 500);
+// var score = 0;
+// setInterval(function() {
+//   score += 1
+// }, 500);
