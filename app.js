@@ -18,6 +18,9 @@ const score = {
   fontFamily: 'Arial'
 }
 
+const startGame = document.getElementById("startGame");
+const menu = document.getElementById("menu");
+
 class Enemy {
   constructor(x, y, w, h, v) {
     this.x = x;
@@ -39,6 +42,16 @@ class Enemy {
   }
 }
 
+
+
+startGame.addEventListener("click", (event) =>{
+  animate();
+  spawnEnemies();
+  // Updates score
+const scoreInterval = setInterval(() => {
+  score.points += 1
+}, 500);
+menu.style.display = "none";
 // Event listener to move player
 document.addEventListener("keydown", key);
 
@@ -80,6 +93,7 @@ function key(event){
     }
   }
 }
+});
 
 
 // Returns a random integer from 1 - 3
@@ -151,11 +165,3 @@ function animate() {
     enemy.update();
   })
 }
-
-animate();
-spawnEnemies();
-
-// Updates score
-const scoreInterval = setInterval(() => {
-  score.points += 1
-}, 500);

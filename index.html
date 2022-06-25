@@ -5,12 +5,40 @@
  <head>
      <title>Arrow Dodge</title>
      <style>
-      body {
-        margin: 0;
+      body{
+        margin: 0px;
       }
+
+      #menu {
+        position:absolute;
+        text-align: center;
+        top: 40%;
+        bottom: 0;
+        right: 0;
+        left: 44%;
+      }
+
+      #container {
+        background-color: white;
+        max-width: 200px;
+        
+      }
+
+      #points {
+        margin-top: 0px;
+      }
+
      </style>
  <head>
   <body>
+    
+    <div id = menu>
+      <div id = container>
+        <h1 id = points>0</h1>
+        <p>Points</p>
+        <button id="startGame">Start Game</button>
+      </div>
+    </div>
 
     <canvas  style="background-color: black;" id = "Game"   width="1900" height="910" ></canvas>
 
