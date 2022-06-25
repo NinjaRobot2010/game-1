@@ -1,0 +1,39 @@
+html {
+   height: 100%;
+}
+
+body{
+   margin: 0px;
+   background-color: #373737;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100%;
+ }
+
+ .outer-container {
+   position: relative;
+   margin: auto;
+   width: 1900px;
+   height: 910px;
+ }
+
+ .startMenu {
+   background-color: #FFF;
+
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+
+   padding: 20px;
+   text-align: center;
+   width: 300px;
+
+ }
+
+ #Game {
+   background-color: #000;
+ }
+
+ 
