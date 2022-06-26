@@ -1,5 +1,9 @@
 const canvas = document.getElementById("Game");
 const ctx = canvas.getContext("2d");
+const menuEl = document.querySelector(".startMenu");
+const pointsEl = document.querySelector("#points");
+const startGameBtn = document.querySelector("#startGameBtn");
+let scoreInterval;
 
 const hero = {
   x: canvas.width / 2 - 75,
@@ -39,47 +43,65 @@ class Enemy {
   }
 }
 
-// Event listener to move player
-document.addEventListener("keydown", key);
+startGameBtn.addEventListener("click", (event) => {
+  resetGame();
+  animate();
+  spawnEnemies();
+ 
+  // Updates score
+  scoreInterval = setInterval(() => {
+    score.points += 1
+  }, 500);
 
-var check = 2;
+  menuEl.style.display = "none";
 
-//Keys to move player
-function key(event){
-  console.log(check);
+});
 
-  //Key D
-  if (event.keyCode === 68 ) {
-    if (check < 3) {
-      check = check + 1 ;
-      hero.x = hero.x + 1900 / 3;
+    
+  
+
+
+  // Event listener to move player
+  document.addEventListener("keydown", key);
+
+  var check = 2;
+
+  //Keys to move player
+  function key(event) {
+
+    //Key D
+    if (event.keyCode === 68 ) {
+      if (check < 3) {
+        check = check + 1 ;
+        hero.x = hero.x + 1900 / 3;
+      }
+    }
+
+    //Key A
+    if (event.keyCode === 65) {
+      if (check > 1) {
+        check = check - 1;
+        hero.x = hero.x - 1900 / 3;
+      }
+    }
+
+    // Left arrow
+    if (event.keyCode === 37 ) {
+      if (check > 1) {
+        check = check - 1;
+        hero.x = hero.x - 1900 / 3;
+      }
+    }
+
+    // Right arrow
+    if (event.keyCode === 39) {
+      if (check < 3) {
+        check = check + 1 ;
+        hero.x = hero.x + 1900 / 3;
+      }
     }
   }
 
-  //Key A
-  if (event.keyCode === 65) {
-    if (check > 1) {
-      check = check - 1;
-      hero.x = hero.x - 1900 / 3;
-    }
-  }
-
-  // Left arrow
-  if (event.keyCode === 37 ) {
-    if (check > 1) {
-      check = check - 1;
-      hero.x = hero.x - 1900 / 3;
-    }
-  }
-
-  // Right arrow
-  if (event.keyCode === 39) {
-    if (check < 3) {
-      check = check + 1 ;
-      hero.x = hero.x + 1900 / 3;
-    }
-  }
-}
 
 
 // Returns a random integer from 1 - 3
@@ -146,16 +168,18 @@ function animate() {
     Math.abs(hero.y - enemy.y) <= hero.h ) {
       cancelAnimationFrame(animationId);
       clearInterval(spawnInterval);
+      clearInterval(scoreInterval);
+      menuEl.style.display = "block";
+      pointsEl.innerText = score.points;
     }
 
     enemy.update();
   })
 }
 
-animate();
-spawnEnemies();
-
-// Updates score
-const scoreInterval = setInterval(() => {
-  score.points += 1
-}, 500);
+function resetGame() {
+  enemies.length = 0;
+  hero.x = canvas.width / 2 - 75;
+  check = 2;
+  score.points = 0;
+}

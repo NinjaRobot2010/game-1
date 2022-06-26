@@ -1,21 +1,26 @@
 <!DOCTYPE html>
-
 <html>
-
- <head>
-     <title>Arrow Dodge</title>
-     <style>
-      body {
-        margin: 0;
-      }
-     </style>
- <head>
+  <head>
+    <title>Arrow Dodge</title>
+    <link rel="stylesheet" type="text/css" href="app.css" media="screen">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  </head>
   <body>
+    
+  <div class="outerContainer">
 
-    <canvas  style="background-color: black;" id = "Game"   width="1900" height="910" ></canvas>
+    <div class="startMenu">
+      <h1 id="points">0</h1>
+      <p>Points</p>
+      <button id="startGameBtn">Start Game</button>
+    </div>
 
-    <script src="app.js" type="application/javascript"></script>
-  
+    <canvas id="Game" width="1900" height="910"></canvas>
+
+  </div>
+    
+  <script src="app.js" type="application/javascript"></script>
   </body>
-
 </html>

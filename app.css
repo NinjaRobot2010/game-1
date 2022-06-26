@@ -1,0 +1,68 @@
+html {
+   height: 100%;
+}
+
+body{
+   margin: 0px;
+   background-color: #373737;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100%;
+ }
+
+ .outerContainer {
+   position: relative;
+   margin: auto;
+   width: 1900px;
+   height: 910px;
+   font-family: 'Press Start 2P', cursive;
+ }
+
+ .startMenu {
+   background-color: #c4c4c4;
+   border: 6px solid #484848;
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   padding: 30px;
+   text-align: center;
+   width: 400px;
+ }
+
+ .startMenu h1 {
+   margin: 0;
+   margin-bottom: 10px;
+   font-size: 32px;
+ }
+
+ .startMenu p {
+   margin-top: 0;
+   margin-bottom: 30px;
+   font-size: 16px
+ }
+
+ #startGameBtn {
+   padding: 16px 24px 12px 24px;
+   font-size: 24px;
+   font-family: inherit;
+   color: #000;
+   border-radius: 50px;
+   background-color: #00d800;
+   border: 2px solid black;
+   cursor: pointer;
+   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(68, 68, 68, 0.70) 0px -2px 6px 0px inset;
+   transition: ease-out .1s;
+ }
+
+ #startGameBtn:hover,  #startGameBtn:focus {
+   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(68, 68, 68, 0.70) 0px -2px 6px 0px inset;
+   background-color: #00cb00;
+} 
+
+ #Game {
+   background-color: #000;
+ }
+
+ 
