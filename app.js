@@ -68,7 +68,6 @@ startGameBtn.addEventListener("click", (event) => {
 
   //Keys to move player
   function key(event) {
-    console.log(check);
 
     //Key D
     if (event.keyCode === 68 ) {
