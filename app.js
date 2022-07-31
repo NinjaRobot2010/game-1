@@ -14,6 +14,7 @@ const hero = {
   y: 150,
   w: 150,
   h: 150,
+  v: 20,
   fill: 'Red'
 }
 
@@ -73,7 +74,7 @@ function spawnEnemies() {
     const y = canvas.height;
     const w = 100;
     const h = 250;
-    const v = 15;
+    const v = 5;
 
     //Spawnes enemy
     enemies.push(new Enemy(x,y,w,h,v));
@@ -129,11 +130,11 @@ function resetPlayerKey(event) {
 
 function updateHeroPosition(key) {
   if ( (key === 'd' || key === 'rightArrow') && hero.x + hero.w < canvas.width) {
-    hero.x += 20;
+    hero.x += hero.v;
   }
 
   if ( (key === 'a' || key === 'leftArrow') && hero.x > 0) {
-    hero.x -= 20;
+    hero.x -= hero.v;
   }
 }
 
@@ -152,6 +153,7 @@ function animate() {
   ctx.fillStyle = hero.fill;
   ctx.fillRect(hero.x, hero.y, hero.w, hero.h);
 
+  
 
   // Draws score
   ctx.fillStyle = score.color;
@@ -168,15 +170,28 @@ function animate() {
     }
 
     // Collision detection
-    if ( Math.abs(hero.x - enemy.x) <= hero.w && 
-    Math.abs(hero.y - enemy.y) <= hero.h ) {
-      cancelAnimationFrame(animationId);
-      clearInterval(spawnInterval);
-      clearInterval(scoreInterval);
-      menuEl.style.display = "block";
-      pointsEl.innerText = score.points;
+    if (
+        (
+          // if hero position is right of enemy
+          (hero.x > enemy.x) && Math.abs(hero.x - enemy.x) <= enemy.w ||
+          // or, if hero position is left of enemy
+          (hero.x < enemy.x) && Math.abs(enemy.x - hero.x) <= hero.w
+        ) && 
+        (
+          // if hero position is below enemy
+          (hero.y > enemy.y) && Math.abs(hero.y - enemy.y) <= enemy.h ||
+          // or, if hero position is above enemy
+          (hero.y < enemy.y) && Math.abs(enemy.y - hero.y) <= hero.h
+        )
+    ) {
+        cancelAnimationFrame(animationId);
+        clearInterval(spawnInterval);
+        clearInterval(scoreInterval);
+        menuEl.style.display = "block";
+        pointsEl.innerText = score.points;
     }
 
+    // Draws enemy and updates their position
     enemy.update();
   })
 }
