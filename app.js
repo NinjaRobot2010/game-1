@@ -70,70 +70,41 @@ startGameBtn.addEventListener("click", (event) => {
   function key(event) {
 
     //Key D
-    if (event.keyCode === 68 ) {
-      if (check < 3) {
-        check = check + 1 ;
-        hero.x = hero.x + 1900 / 3;
-      }
+    if (event.keyCode === 68 && hero.x + hero.w < canvas.width) {
+      hero.x += 20;
     }
 
     //Key A
-    if (event.keyCode === 65) {
-      if (check > 1) {
-        check = check - 1;
-        hero.x = hero.x - 1900 / 3;
+    if (event.keyCode === 65 && hero.x > 0) {
+       hero.x -= 20;
       }
-    }
 
     // Left arrow
-    if (event.keyCode === 37 ) {
-      if (check > 1) {
-        check = check - 1;
-        hero.x = hero.x - 1900 / 3;
-      }
+    if (event.keyCode === 37 && hero.x > 0) {
+      hero.x -= 20;
     }
 
     // Right arrow
-    if (event.keyCode === 39) {
-      if (check < 3) {
-        check = check + 1 ;
-        hero.x = hero.x + 1900 / 3;
-      }
+    if (event.keyCode === 39 && hero.x + hero.w < canvas.width) {
+      hero.x += 20;
     }
   }
-
-
-
-// Returns a random integer from 1 - 3
-function getRandomNum() {
-  return Math.floor(Math.random() * 3) + 1;
-} 
 
 const enemies = [];
 let spawnInterval;
 
 function spawnEnemies() {
    spawnInterval = setInterval( () => {
-    let x;
+
+    //enemy characteristics
+    const x = Math.random() * canvas.width;
     const y = canvas.height;
     const w = 100;
     const h = 250;
     const v = 15;
-    
-    const column = getRandomNum();
-    switch(column) {
-      case 1:
-        x = canvas.width / 6 - 50;
-        break;
-      case 2:
-        x = canvas.width / 2 - 50;
-        break;
-      case 3:
-        x = canvas.width / 6 * 5 - 50
-    }
 
-    enemies.push(new Enemy(x, y, w, h, v));
-
+    //Spawnes enemy
+    enemies.push(new Enemy(x,y,w,h,v));
   }, 1000)
 }
 
