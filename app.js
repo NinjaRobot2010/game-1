@@ -5,12 +5,16 @@ const pointsEl = document.querySelector("#points");
 const startGameBtn = document.querySelector("#startGameBtn");
 let scoreInterval;
 
+const player = {
+  keyPressed: null
+}
+
 const hero = {
   x: canvas.width / 2 - 75,
   y: 150,
   w: 150,
   h: 150,
-  fill: 'Red',
+  fill: 'Red'
 }
 
 const score = {
@@ -58,38 +62,6 @@ startGameBtn.addEventListener("click", (event) => {
 });
 
     
-  
-
-
-  // Event listener to move player
-  document.addEventListener("keydown", key);
-
-  var check = 2;
-
-  //Keys to move player
-  function key(event) {
-
-    //Key D
-    if (event.keyCode === 68 && hero.x + hero.w < canvas.width) {
-      hero.x += 20;
-    }
-
-    //Key A
-    if (event.keyCode === 65 && hero.x > 0) {
-       hero.x -= 20;
-      }
-
-    // Left arrow
-    if (event.keyCode === 37 && hero.x > 0) {
-      hero.x -= 20;
-    }
-
-    // Right arrow
-    if (event.keyCode === 39 && hero.x + hero.w < canvas.width) {
-      hero.x += 20;
-    }
-  }
-
 const enemies = [];
 let spawnInterval;
 
@@ -108,6 +80,63 @@ function spawnEnemies() {
   }, 1000)
 }
 
+
+// Event listener to move player
+document.addEventListener("keydown", updatePlayerKey);
+document.addEventListener("keyup", resetPlayerKey);
+
+function updatePlayerKey(event) {
+  // Key 'd' or 'right arrow' key
+  if (event.keyCode === 68) {
+    player.keyPressed = 'd';
+  }
+
+  if (event.keyCode === 39) {
+    player.keyPressed = 'rightArrow';
+  }
+
+  // Key a or 'left arrow' key
+  if (event.keyCode === 65) {
+    player.keyPressed = 'a';
+  }
+
+  // Key a or 'left arrow' key
+  if (event.keyCode === 37) {
+    player.keyPressed = 'leftArrow';
+  }
+}
+
+function resetPlayerKey(event) {
+  // if keyup is 'd' or right arrow then reset player keyPressed to null
+  if (event.keyCode === 68 && player.keyPressed === 'd') {
+    player.keyPressed = null;
+  }
+
+  if (event.keyCode === 39 && player.keyPressed === 'rightArrow') {
+    player.keyPressed = null;
+  }
+
+  // if keyup is 'a' or left arrow then reset player keyPressed to null
+  if (event.keyCode === 65 && player.keyPressed === 'a') {
+    player.keyPressed = null;
+  }
+
+  if (event.keyCode === 37 && player.keyPressed === 'leftArrow') {
+    player.keyPressed = null;
+  }
+}
+
+
+function updateHeroPosition(key) {
+  if ( (key === 'd' || key === 'rightArrow') && hero.x + hero.w < canvas.width) {
+    hero.x += 20;
+  }
+
+  if ( (key === 'a' || key === 'leftArrow') && hero.x > 0) {
+    hero.x -= 20;
+  }
+}
+
 let animationId;
 
 function animate() {
@@ -116,9 +145,13 @@ function animate() {
   // Clears canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Updates hero position
+  updateHeroPosition(player.keyPressed);
+
   // Draws hero
   ctx.fillStyle = hero.fill;
   ctx.fillRect(hero.x, hero.y, hero.w, hero.h);
+
 
   // Draws score
   ctx.fillStyle = score.color;
