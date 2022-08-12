@@ -11,7 +11,7 @@ const player = {
 
 const hero = {
   x: canvas.width / 2 - 75,
-  y: 150,
+  y: canvas.height - 300,
   w: 150,
   h: 150,
   v: 20,
@@ -69,14 +69,14 @@ let spawnInterval;
 function spawnEnemies() {
    spawnInterval = setInterval( () => {
 
-    //enemy characteristics
+    // Enemy characteristics
     const x = Math.random() * canvas.width;
-    const y = canvas.height;
-    const w = 100;
     const h = 250;
-    const v = 5;
+    const y = 0 - h;
+    const w = 100;
+    const v = -5;
 
-    //Spawnes enemy
+    // Spawns enemy
     enemies.push(new Enemy(x,y,w,h,v));
   }, 1000)
 }
