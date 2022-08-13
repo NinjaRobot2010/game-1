@@ -4,6 +4,7 @@ const menuEl = document.querySelector(".startMenu");
 const pointsEl = document.querySelector("#points");
 const startGameBtn = document.querySelector("#startGameBtn");
 let scoreInterval;
+let isGameStarted = false;
 
 const player = {
   keyPressed: null
@@ -44,22 +45,53 @@ class Enemy {
   
   update() {
     this.draw();
+    this.y = this.y + this.v;
+  }
+}
+
+class Projectile {
+  constructor(x, y, r, color, v) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = color;
+    this.v = v;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+
+  update() {
+    this.draw();
     this.y = this.y - this.v;
   }
 }
 
-startGameBtn.addEventListener("click", (event) => {
-  resetGame();
-  animate();
-  spawnEnemies();
- 
-  // Updates score
-  scoreInterval = setInterval(() => {
-    score.points += 1
-  }, 500);
+const projectiles = [];
 
-  menuEl.style.display = "none";
+window.addEventListener('click',(event) => {
+  if (event.target === startGameBtn) {
+    resetGame();
+    animate();
+    spawnEnemies();
+    isGameStarted = true;
+   
+    // Updates score
+    scoreInterval = setInterval(() => {
+      score.points += 1
+    }, 500);
+  
+    menuEl.style.display = "none";
+  }
 
+  if (event.target != startGameBtn && isGameStarted === true) {
+    const projectile = new Projectile(hero.x + (hero.w / 2), hero.y + (hero.h / 2), 8, 'yellow', 15);
+    projectiles.push(projectile)
+  } 
 });
 
     
@@ -74,7 +106,7 @@ function spawnEnemies() {
     const h = 250;
     const y = 0 - h;
     const w = 100;
-    const v = -5;
+    const v = 5;
 
     // Spawns enemy
     enemies.push(new Enemy(x,y,w,h,v));
@@ -153,23 +185,21 @@ function animate() {
   ctx.fillStyle = hero.fill;
   ctx.fillRect(hero.x, hero.y, hero.w, hero.h);
 
-  
-
   // Draws score
   ctx.fillStyle = score.color;
   ctx.font = `${score.fontSize}px ${score.fontFamily}`;
   ctx.fillText(`Score: ${score.points}`, score.x, score.y);
 
   // Loops through enemies array
-  enemies.forEach((enemy, index) => {
+  enemies.forEach((enemy, enemyIndex) => {
     // Removes enemies off screen
     if (enemy.y < 0 - enemy.h) {
       setTimeout(() => {
-        enemies.splice(index, 1);
+        enemies.splice(enemyIndex, 1);
       }, 0)
     }
 
-    // Collision detection
+    // Collision detection for hero
     if (
         (
           // if hero position is right of enemy
@@ -191,8 +221,35 @@ function animate() {
         pointsEl.innerText = score.points;
     }
 
+     // Collision detection for projectiles
+     // Loop through projectiles array
+     projectiles.forEach((projectile, projectileIndex) => {
+      // if projectile position is below enemy
+      if ( 
+          // if projectile position is below enemy
+          (projectile.y > enemy.y) && Math.abs( (projectile.y - projectile.r) - enemy.y) <= enemy.h &&
+          (projectile.x + projectile.r) > enemy.x && (projectile.x - projectile.r) < (enemy.x + enemy.w)
+          ) {
+        enemies.splice(enemyIndex, 1);
+        projectiles.splice(projectileIndex, 1);
+      }
+    })
+
     // Draws enemy and updates their position
     enemy.update();
+  })
+
+  // Loop through projectiles array
+  projectiles.forEach((projectile, index) => {
+    // Removes projectiles off screen
+    if (projectile.y < 0 - projectile.r) {
+      setTimeout(() => {
+        projectiles.splice(index, 1);
+      }, 0)
+    }
+
+    // Draws projectile and updates their position
+    projectile.update();
   })
 }
 
