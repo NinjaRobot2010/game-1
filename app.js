@@ -47,6 +47,21 @@ class Enemy {
     this.y = this.y - this.v;
   }
 }
+class Projectile {
+  constructor(x,y,radius,color,velocity){
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.color = color;
+    this.velocity = velocity;
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
 
 startGameBtn.addEventListener("click", (event) => {
   resetGame();
@@ -106,6 +121,10 @@ function updatePlayerKey(event) {
     player.keyPressed = 'leftArrow';
   }
 }
+
+window.addEventListener('click',() => {
+  console.log("go");
+});
 
 function resetPlayerKey(event) {
   // if keyup is 'd' or right arrow then reset player keyPressed to null
