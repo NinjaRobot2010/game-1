@@ -232,6 +232,7 @@ function animate() {
           ) {
         enemies.splice(enemyIndex, 1);
         projectiles.splice(projectileIndex, 1);
+        score.points += 10;
       }
     })
 
