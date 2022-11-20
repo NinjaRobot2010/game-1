@@ -119,23 +119,19 @@ document.addEventListener("keydown", updatePlayerKey);
 document.addEventListener("keyup", resetPlayerKey);
 
 function updatePlayerKey(event) {
-  // Key 'd' or 'right arrow' key
-  if (event.keyCode === 68) {
-    player.keyPressed = 'd';
-  }
-
-  if (event.keyCode === 39) {
-    player.keyPressed = 'rightArrow';
-  }
-
-  // Key a or 'left arrow' key
-  if (event.keyCode === 65) {
-    player.keyPressed = 'a';
-  }
-
-  // Key a or 'left arrow' key
-  if (event.keyCode === 37) {
-    player.keyPressed = 'leftArrow';
+  switch (event.keyCode) {
+    case 68:
+      player.keyPressed = 'd';
+      break;
+    case 39:
+      player.keyPressed = 'rightArrow';
+      break;
+    case 65:
+      player.keyPressed = 'a';
+      break;
+    case 37:
+      player.keyPressed = 'leftArrow';
+      break;
   }
 }
 
