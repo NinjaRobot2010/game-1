@@ -28,6 +28,13 @@ const score = {
   fontFamily: 'Arial'
 }
 
+keyMap = {
+  leftArrow: 37,
+  rightArrow: 39,
+  a: 65,
+  d: 68
+}
+
 class Enemy {
   constructor(x, y, w, h, v) {
     this.x = x;
@@ -119,42 +126,36 @@ document.addEventListener("keydown", updatePlayerKey);
 document.addEventListener("keyup", resetPlayerKey);
 
 function updatePlayerKey(event) {
-  // Key 'd' or 'right arrow' key
-  if (event.keyCode === 68) {
-    player.keyPressed = 'd';
-  }
-
-  if (event.keyCode === 39) {
-    player.keyPressed = 'rightArrow';
-  }
-
-  // Key a or 'left arrow' key
-  if (event.keyCode === 65) {
-    player.keyPressed = 'a';
-  }
-
-  // Key a or 'left arrow' key
-  if (event.keyCode === 37) {
-    player.keyPressed = 'leftArrow';
+  switch (event.keyCode) {
+    case keyMap.d:
+      player.keyPressed = 'd';
+      break;
+    case keyMap.rightArrow:
+      player.keyPressed = 'rightArrow';
+      break;
+    case keyMap.a:
+      player.keyPressed = 'a';
+      break;
+    case keyMap.leftArrow:
+      player.keyPressed = 'leftArrow';
+      break;
   }
 }
 
 function resetPlayerKey(event) {
   // if keyup is 'd' or right arrow then reset player keyPressed to null
-  if (event.keyCode === 68 && player.keyPressed === 'd') {
+  if (event.keyCode === keyMap.d && player.keyPressed === 'd') {
     player.keyPressed = null;
   }
-
-  if (event.keyCode === 39 && player.keyPressed === 'rightArrow') {
+  if (event.keyCode === keyMap.rightArrow && player.keyPressed === 'rightArrow') {
     player.keyPressed = null;
   }
 
   // if keyup is 'a' or left arrow then reset player keyPressed to null
-  if (event.keyCode === 65 && player.keyPressed === 'a') {
+  if (event.keyCode === keyMap.a && player.keyPressed === 'a') {
     player.keyPressed = null;
   }
-
-  if (event.keyCode === 37 && player.keyPressed === 'leftArrow') {
+  if (event.keyCode === keyMap.leftArrow && player.keyPressed === 'leftArrow') {
     player.keyPressed = null;
   }
 }
