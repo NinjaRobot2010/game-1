@@ -16,20 +16,20 @@ const player = {
 }
 
 const hero = {
-  x: canvas.width / 2 - 75,
-  y: canvas.height - 300,
-  w: 150,
-  h: 150,
-  v: 20,
+  x: canvas.width / 2 - 36,
+  y: canvas.height - 144,
+  w: 64,
+  h: 64,
+  v: 5,
   fill: 'Red'
 }
 
 const score = {
   points: 0,
-  x: 20,
-  y: 50,
+  x: 15,
+  y: 30,
   color: 'white',
-  fontSize: 48,
+  fontSize: 24,
   fontFamily: 'Arial'
 }
 
@@ -126,7 +126,7 @@ window.addEventListener('click',(event) => {
   }
 
   if (event.target != startGameBtn && isGameStarted === true) {
-    const projectile = new Projectile(hero.x + (hero.w / 2), hero.y + (hero.h / 2), 8, 'yellow', 15);
+    const projectile = new Projectile(hero.x + (hero.w / 2), hero.y + (hero.h / 2), 8, 'yellow', 10);
     projectiles.push(projectile)
   } 
 });
@@ -152,9 +152,9 @@ function spawnEnemies() {
 
     // Enemy characteristics
     const x = Math.random() * canvas.width;
-    const h = 250;
+    const h = 64;
     const y = 0 - h;
-    const w = 100;
+    const w = 64
     const v = 5;
 
     // Spawns enemy
