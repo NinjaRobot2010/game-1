@@ -13,8 +13,8 @@ const player = {
 const hero = {
   x: canvas.width / 2 - 36,
   y: canvas.height - 144,
-  w: 72,
-  h: 72,
+  w: 64,
+  h: 64,
   v: 5,
   fill: 'Red'
 }
@@ -103,9 +103,9 @@ function spawnEnemies() {
 
     // Enemy characteristics
     const x = Math.random() * canvas.width;
-    const h = 72;
+    const h = 64;
     const y = 0 - h;
-    const w = 72
+    const w = 64
     const v = 5;
 
     // Spawns enemy
