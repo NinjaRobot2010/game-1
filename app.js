@@ -5,6 +5,11 @@ const pointsEl = document.querySelector("#points");
 const startGameBtn = document.querySelector("#startGameBtn");
 let scoreInterval;
 let isGameStarted = false;
+// Game background will continuously loop through bgImages in order. Must have at least two image sources (strings) in array.
+const bgImages = [
+  './seamlessForest.jpg',
+  './seamlessForest.jpg'
+];
 
 const player = {
   keyPressed: null
@@ -78,20 +83,45 @@ class Projectile {
   }
 }
 
+
+class Background {
+  constructor(imgEl, x, y, w, h, v) {
+    this.imgEl = imgEl;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.v = v;
+  }
+
+  draw() {
+    ctx.drawImage(this.imgEl, this.x, this.y, this.w, this.h);
+  }
+
+  update() {
+    this.draw();
+    this.y = this.y + this.v;
+  }
+}
+
+const backgrounds = [];
+
+function createBgs(bgImgs) {
+  bgImgs.forEach((img, index) => {
+    const bgEl = new Image();
+    bgEl.src = img;
+    const prevBg = index === 0 ? null : backgrounds[index - 1];
+    const bgYcoordinate = prevBg ? prevBg.y - canvas.height : 0;
+    backgrounds.push(new Background(bgEl, 0, bgYcoordinate, canvas.width, canvas.height, 1));
+  })
+}
+
 const projectiles = [];
 
 window.addEventListener('click',(event) => {
+  // If START button is clicked, start a new game
   if (event.target === startGameBtn) {
-    resetGame();
-    animate();
-    spawnEnemies();
-    isGameStarted = true;
-   
-    // Updates score
-    scoreInterval = setInterval(() => {
-      score.points += 1
-    }, 500);
-  
+    startNewGame();
     menuEl.style.display = "none";
   }
 
@@ -100,6 +130,18 @@ window.addEventListener('click',(event) => {
     projectiles.push(projectile)
   } 
 });
+
+function startNewGame() {
+  resetGame();
+  animate();
+  spawnEnemies();
+  isGameStarted = true;
+  
+  // Updates score
+  scoreInterval = setInterval(() => {
+    score.points += 1
+  }, 500);
+}
 
     
 const enemies = [];
@@ -171,6 +213,20 @@ function updateHeroPosition(key) {
   }
 }
 
+function updateBgPos() {
+  for (let i = 0; i < backgrounds.length; i++) {
+    // If any background has reached bottom of canvas
+    if (backgrounds[i].y >= canvas.height) {
+      // Update position of bg to be on top of last bg in backgrounds array
+      backgrounds[i].y = backgrounds[backgrounds.length - 1].y - backgrounds[i].h;
+      // put bg to the back of backgrounds array
+      const bottomBg = backgrounds.splice(i, 1);
+      backgrounds.push(bottomBg[0]);
+    }
+    backgrounds[i].update();
+  }
+}
+
 let animationId;
 
 function animate() {
@@ -178,6 +234,9 @@ function animate() {
 
   // Clears canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Update backgrounds position
+  updateBgPos();
 
   // Updates hero position
   updateHeroPosition(player.keyPressed);
@@ -258,6 +317,7 @@ function animate() {
 function resetGame() {
   enemies.length = 0;
   hero.x = canvas.width / 2 - 75;
-  check = 2;
   score.points = 0;
+  backgrounds.length = 0;
+  createBgs(bgImages);
 }
