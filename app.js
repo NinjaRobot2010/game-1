@@ -7,8 +7,8 @@ let scoreInterval;
 let isGameStarted = false;
 // Game background will continuously loop through bgImages in order. Must have at least two image sources (strings) in array.
 const bgImages = [
-  './seamlessForest.jpg',
-  './seamlessForest.jpg'
+  './images/seamlessForest.jpg',
+  './images/seamlessForest.jpg'
 ];
 
 const player = {
@@ -16,12 +16,13 @@ const player = {
 }
 
 const hero = {
+  img: './images/hero.png',
+  imgEl: new Image(),
   x: canvas.width / 2 - 36,
   y: canvas.height - 144,
   w: 64,
   h: 64,
-  v: 5,
-  fill: 'Red'
+  v: 5
 }
 
 const score = {
@@ -242,8 +243,8 @@ function animate() {
   updateHeroPosition(player.keyPressed);
 
   // Draws hero
-  ctx.fillStyle = hero.fill;
-  ctx.fillRect(hero.x, hero.y, hero.w, hero.h);
+  hero.imgEl.src = hero.img;
+  ctx.drawImage(hero.imgEl, 0, 0, 64, 64, hero.x, hero.y, hero.w, hero.h);
 
   // Draws score
   ctx.fillStyle = score.color;
