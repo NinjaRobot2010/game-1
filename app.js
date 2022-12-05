@@ -43,6 +43,8 @@ keyMap = {
 
 class Enemy {
   constructor(x, y, w, h, v) {
+    this.img = new Image();
+    this.img.src = './images/enemies.png';
     this.x = x;
     this.y = y;
     this.w = w;
@@ -51,9 +53,7 @@ class Enemy {
   }
 
   draw() {
-    ctx.fillStyle = "MediumBlue";
-    ctx.strokeStyle = "MediumBlue";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.drawImage(this.img, 192, 0, 64, 64, this.x, this.y, this.w, this.h);
   }
   
   update() {
