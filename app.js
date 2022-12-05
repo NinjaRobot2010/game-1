@@ -16,8 +16,7 @@ const player = {
 }
 
 const hero = {
-  img: './images/hero.png',
-  imgEl: new Image(),
+  img: new Image(),
   x: canvas.width / 2 - 36,
   y: canvas.height - 144,
   w: 64,
@@ -243,8 +242,8 @@ function animate() {
   updateHeroPosition(player.keyPressed);
 
   // Draws hero
-  hero.imgEl.src = hero.img;
-  ctx.drawImage(hero.imgEl, 0, 0, 64, 64, hero.x, hero.y, hero.w, hero.h);
+  hero.img.src = './images/hero.png';
+  ctx.drawImage(hero.img, 0, 0, 64, 64, hero.x, hero.y, hero.w, hero.h);
 
   // Draws score
   ctx.fillStyle = score.color;
