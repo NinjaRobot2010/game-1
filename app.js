@@ -41,7 +41,7 @@ keyMap = {
 }
 
 class Enemy {
-  constructor(x, y, w, h, v) {
+  constructor(x, y, w, h, v, spriteW, spriteH) {
     this.img = new Image();
     this.img.src = './images/enemies.png';
     this.x = x;
@@ -49,7 +49,14 @@ class Enemy {
     this.w = w;
     this.h = h;
     this.v = v;
+    this.spriteW = spriteW;
+    this.spriteH = spriteH;
+    //                 64 - 30 = 34 / 2 = 17
+    this.hitboxWDif = (w - spriteW) / 2;
+    this.hitboxHDif = (h - spriteH) / 2;
   }
+
+  
 
   draw() {
     ctx.drawImage(this.img, 192, 0, 64, 64, this.x, this.y, this.w, this.h);
@@ -156,9 +163,11 @@ function spawnEnemies() {
     const y = 0 - h;
     const w = 64
     const v = 5;
+    const sw = 36;
+    const sh = 28;
 
     // Spawns enemy
-    enemies.push(new Enemy(x,y,w,h,v));
+    enemies.push(new Enemy(x,y,w,h,v,sw,sh));
   }, 1000)
 }
 
@@ -227,6 +236,7 @@ function updateBgPos() {
   }
 }
 
+
 let animationId;
 
 function animate() {
@@ -263,17 +273,20 @@ function animate() {
     if (
         (
           // if hero position is right of enemy
-          (hero.x > enemy.x) && Math.abs(hero.x - enemy.x) <= enemy.w ||
+          (hero.x > enemy.x) && Math.abs(hero.x - enemy.x) <= enemy.w - enemy.hitboxWDif ||
           // or, if hero position is left of enemy
-          (hero.x < enemy.x) && Math.abs(enemy.x - hero.x) <= hero.w
-        ) && 
+          (hero.x < enemy.x) && Math.abs(enemy.x - hero.x) <= hero.w - enemy.hitboxWDif
+        ) 
+        && 
         (
           // if hero position is below enemy
-          (hero.y > enemy.y) && Math.abs(hero.y - enemy.y) <= enemy.h ||
+          (hero.y > enemy.y) && Math.abs(hero.y - enemy.y) <= enemy.h - enemy.hitboxHDif ||
           // or, if hero position is above enemy
           (hero.y < enemy.y) && Math.abs(enemy.y - hero.y) <= hero.h
         )
+
     ) {
+        console.log(enemy.hitboxHDif);
         cancelAnimationFrame(animationId);
         clearInterval(spawnInterval);
         clearInterval(scoreInterval);
