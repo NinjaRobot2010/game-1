@@ -11,6 +11,11 @@ const bgImages = [
   './images/seamlessForest.jpg'
 ];
 
+
+const collision_sfx = new Audio('./sound/Minifantasy_Dungeon_SFX/01_chest_open_2.wav');
+
+
+
 const player = {
   keyPressed: null
 }
@@ -55,8 +60,6 @@ class Enemy {
     this.hitboxWDif = (w - spriteW) / 2;
     this.hitboxHDif = (h - spriteH) / 2;
   }
-
-  
 
   draw() {
     ctx.drawImage(this.img, 192, 0, 64, 64, this.x, this.y, this.w, this.h);
@@ -125,7 +128,7 @@ function createBgs(bgImgs) {
 
 const projectiles = [];
 
-window.addEventListener('click',(event) => {
+addEventListener('click',(event) => {
   // If START button is clicked, start a new game
   if (event.target === startGameBtn) {
     startNewGame();
@@ -135,6 +138,12 @@ window.addEventListener('click',(event) => {
   if (event.target != startGameBtn && isGameStarted === true) {
     const projectile = new Projectile(hero.x + (hero.w / 2), hero.y + (hero.h / 2), 8, 'yellow', 10);
     projectiles.push(projectile)
+
+    let shoot_sfx1 = new Audio('./sound/Minifantasy_Dungeon_SFX/01_chest_open_1.wav');
+    shoot_sfx1.play();
+
+    
+    
   } 
 });
 
@@ -236,7 +245,6 @@ function updateBgPos() {
   }
 }
 
-
 let animationId;
 
 function animate() {
@@ -284,9 +292,7 @@ function animate() {
           // or, if hero position is above enemy
           (hero.y < enemy.y) && Math.abs(enemy.y - hero.y) <= hero.h
         )
-
     ) {
-        console.log(enemy.hitboxHDif);
         cancelAnimationFrame(animationId);
         clearInterval(spawnInterval);
         clearInterval(scoreInterval);
