@@ -11,11 +11,6 @@ const bgImages = [
   './images/seamlessForest.jpg'
 ];
 
-
-const collision_sfx = new Audio('./sound/Minifantasy_Dungeon_SFX/01_chest_open_2.wav');
-
-
-
 const player = {
   keyPressed: null
 }
@@ -60,6 +55,8 @@ class Enemy {
     this.hitboxWDif = (w - spriteW) / 2;
     this.hitboxHDif = (h - spriteH) / 2;
   }
+
+  
 
   draw() {
     ctx.drawImage(this.img, 192, 0, 64, 64, this.x, this.y, this.w, this.h);
@@ -128,7 +125,7 @@ function createBgs(bgImgs) {
 
 const projectiles = [];
 
-addEventListener('click',(event) => {
+window.addEventListener('click',(event) => {
   // If START button is clicked, start a new game
   if (event.target === startGameBtn) {
     startNewGame();
@@ -142,8 +139,6 @@ addEventListener('click',(event) => {
     let shoot_sfx1 = new Audio('./sound/Minifantasy_Dungeon_SFX/01_chest_open_1.wav');
     shoot_sfx1.play();
 
-    
-    
   } 
 });
 
