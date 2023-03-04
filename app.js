@@ -135,6 +135,10 @@ window.addEventListener('click',(event) => {
   if (event.target != startGameBtn && isGameStarted === true) {
     const projectile = new Projectile(hero.x + (hero.w / 2), hero.y + (hero.h / 2), 8, 'yellow', 10);
     projectiles.push(projectile)
+
+    let shoot_sfx1 = new Audio('./sound/Minifantasy_Dungeon_SFX/01_chest_open_1.wav');
+    shoot_sfx1.play();
+
   } 
 });
 
@@ -236,7 +240,6 @@ function updateBgPos() {
   }
 }
 
-
 let animationId;
 
 function animate() {
@@ -284,9 +287,7 @@ function animate() {
           // or, if hero position is above enemy
           (hero.y < enemy.y) && Math.abs(enemy.y - hero.y) <= hero.h
         )
-
     ) {
-        console.log(enemy.hitboxHDif);
         cancelAnimationFrame(animationId);
         clearInterval(spawnInterval);
         clearInterval(scoreInterval);
