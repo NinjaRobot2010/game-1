@@ -5,6 +5,8 @@ const pointsEl = document.querySelector("#points");
 const startGameBtn = document.querySelector("#startGameBtn");
 let scoreInterval;
 let isGameStarted = false;
+let soundtrack = new Audio('./sound/soundtrack.mp3');
+soundtrack.loop = true;
 // Game background will continuously loop through bgImages in order. Must have at least two image sources (strings) in array.
 const bgImages = [
   './images/seamlessForest.jpg',
@@ -136,8 +138,8 @@ window.addEventListener('click',(event) => {
     const projectile = new Projectile(hero.x + (hero.w / 2), hero.y + (hero.h / 2), 8, 'yellow', 10);
     projectiles.push(projectile)
 
-    let shoot_sfx1 = new Audio('./sound/Minifantasy_Dungeon_SFX/01_chest_open_1.wav');
-    shoot_sfx1.play();
+    let heroShoot = new Audio('./sound/hero_shoot.wav');
+    heroShoot.play();
 
   } 
 });
@@ -146,6 +148,7 @@ function startNewGame() {
   resetGame();
   animate();
   spawnEnemies();
+  soundtrack.play();
   isGameStarted = true;
   
   // Updates score
@@ -293,6 +296,10 @@ function animate() {
         clearInterval(scoreInterval);
         menuEl.style.display = "block";
         pointsEl.innerText = score.points;
+        soundtrack.pause();
+        soundtrack.currentTime = 0;
+        let heroExplosion = new Audio('./sound/hero_explosion.wav');
+        heroExplosion.play();
     }
 
      // Collision detection for projectiles
@@ -307,6 +314,8 @@ function animate() {
         enemies.splice(enemyIndex, 1);
         projectiles.splice(projectileIndex, 1);
         score.points += 10;
+        let enemyExplosion = new Audio('./sound/enemy_explosion.wav');
+        enemyExplosion.play();
       }
     })
 
