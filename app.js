@@ -300,6 +300,7 @@ function animate() {
         soundtrack.currentTime = 0;
         let heroExplosion = new Audio('./sound/hero_explosion.wav');
         heroExplosion.play();
+        isGameStarted = false;
     }
 
      // Collision detection for projectiles
