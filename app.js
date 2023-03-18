@@ -11,6 +11,7 @@ const bgImages = [
   './images/seamlessForest.jpg'
 ];
 
+// some other change asdfjksdklf
 const player = {
   keyPressed: null
 }
