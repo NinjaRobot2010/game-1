@@ -127,7 +127,7 @@ function createBgs(bgImgs) {
 
 const projectiles = [];
 
-window.addEventListener('click',(event) => {
+window.addEventListener('mousedown',(event) => {
   // If START button is clicked, start a new game
   if (event.target === startGameBtn) {
     startNewGame();
@@ -300,6 +300,7 @@ function animate() {
         soundtrack.currentTime = 0;
         let heroExplosion = new Audio('./sound/hero_explosion.wav');
         heroExplosion.play();
+        isGameStarted = false;
     }
 
      // Collision detection for projectiles
