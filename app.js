@@ -19,6 +19,8 @@ const player = {
 
 const hero = {
   img: new Image(),
+  spriteWidth:64,
+  spriteHeight:64,
   x: canvas.width / 2 - 36,
   y: canvas.height - 144,
   w: 64,
@@ -175,7 +177,7 @@ function spawnEnemies() {
 
     // Spawns enemy
     enemies.push(new Enemy(x,y,w,h,v,sw,sh));
-  }, 1000)
+  }, 50)
 }
 
 
@@ -259,7 +261,12 @@ function animate() {
 
   // Draws hero
   hero.img.src = './images/hero.png';
-  ctx.drawImage(hero.img, 0, 0, 64, 64, hero.x, hero.y, hero.w, hero.h);
+  let frameX = 0;
+  let frameY = 3;
+  if(frameX<3){frameX++;
+  console.log("hi")}
+  else frameX = 0;
+  ctx.drawImage(hero.img,hero.spriteWidth*frameX,hero.spriteHeight*frameY,hero.spriteWidth,hero.spriteHeight,hero.x, hero.y,hero.w, hero.h);
 
   // Draws score
   ctx.fillStyle = score.color;
