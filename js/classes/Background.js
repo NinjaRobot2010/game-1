@@ -1,19 +1,11 @@
-class Background {
-   constructor(imgEl, x, y, w, h, v) {
-     this.imgEl = imgEl;
-     this.x = x;
-     this.y = y;
-     this.w = w;
-     this.h = h;
-     this.v = v;
-   }
- 
-   draw() {
-     ctx.drawImage(this.imgEl, this.x, this.y, this.w, this.h);
+class Background extends Sprite {
+   constructor(position = {x:0, y:0}, size = {w:0, h:0}, velocity) {
+     super({position}, size, './images/seamlessForest.jpg', {x: 0, y: 0}, {w: 1000, h: 1000});
+     this.velocity = velocity;
    }
  
    update() {
      this.draw();
-     this.y = this.y + this.v;
+     this.position.y = this.position.y + this.velocity;
    }
  }
