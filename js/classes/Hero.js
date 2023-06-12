@@ -1,41 +1,23 @@
-class Hero {
-   constructor(x, y, w, h, v, spriteW, spriteH) {
-     this.img = new Image();
-     this.img.src = './images/hero.png';
-     this.x = x;
-     this.y = y;
-     this.w = w;
-     this.h = h;
-     this.v = v;
-     this.spriteW = spriteW;
-     this.spriteH = spriteH;
-     this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
-     this.hitboxY = this.y + ((this.h - this.spriteH) / 2);
-   }
- 
-   draw() {
-     ctx.drawImage(this.img, 0, 0, 64, 64, this.x, this.y, this.w, this.h);
- 
-     ctx.strokeStyle = "green";
-     ctx.strokeRect(
-       this.x,
-       this.y,
-       this.w,
-       this.h
-     )
- 
-     ctx.strokeStyle = "red";
-     ctx.strokeRect(
-       this.hitboxX, 
-       this.hitboxY, 
-       this.spriteW, 
-       this.spriteH
-     );
+class Hero extends Sprite{
+   constructor(position = {x:0, y:0}, size = {w:0, h:0}, hitboxSize = {w:0, h:0}, velocity) {
+     super({position}, size, './images/hero.png', {x:0, y:0}, {w:64, h:64});
+     this.hitboxSize = hitboxSize;
+     this.hitboxPosition = {
+      x: this.position.x + ((this.size.w - this.hitboxSize.w) / 2),
+      y: this.position.y + ((this.size.h - this.hitboxSize.h) / 2)
+     };
+     this.velocity = velocity;
    }
    
-   update() {
-     this.draw();
-     this.x = this.x + this.v;
-     this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
+   update(direction) {
+    if (direction === 'right') {
+      this.position.x += this.velocity;
+      this.hitboxPosition.x = this.position.x + ((this.size.w - this.hitboxSize.w) / 2);
+    }
+
+    if (direction === 'left') {
+      this.position.x -= this.velocity;
+      this.hitboxPosition.x = this.position.x + ((this.size.w - this.hitboxSize.w) / 2);
+    }
    }
  }

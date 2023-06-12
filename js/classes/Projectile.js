@@ -1,21 +1,20 @@
 class Projectile {
-   constructor(x, y, r, color, v) {
-     this.x = x;
-     this.y = y;
-     this.r = r;
+   constructor(position = {x:0, y:0}, radius, color, velocity) {
+     this.position = position;
+     this.radius = radius;
      this.color = color;
-     this.v = v;
+     this.velocity = velocity;
    }
  
    draw() {
      ctx.beginPath();
-     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+     ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
      ctx.fillStyle = this.color;
      ctx.fill();
    }
  
    update() {
      this.draw();
-     this.y = this.y - this.v;
+     this.position.y -= this.velocity;
    }
  }

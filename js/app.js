@@ -33,15 +33,28 @@ keyMap = {
 
 const backgrounds = [];
 
-function createBgs(bgImgs) {
-  bgImgs.forEach((img, index) => {
-    const bgEl = new Image();
-    bgEl.src = img;
+function addBackgrounds(bgImgs) {
+  bgImgs.forEach((bg, index) => {
     const prevBg = index === 0 ? null : backgrounds[index - 1];
-    const bgYcoordinate = prevBg ? prevBg.y - canvas.height : 0;
-    backgrounds.push(new Background(bgEl, 0, bgYcoordinate, canvas.width, canvas.height, 1));
+    const bgYcoordinate = prevBg ? prevBg.position.y - canvas.height : 0;
+    backgrounds.push(new Background({x: 0, y: bgYcoordinate}, {w: canvas.width, h: canvas.height}, 1));
   })
 }
+
+function updateBackgroundPosition() {
+  for (let i = 0; i < backgrounds.length; i++) {
+    // If any background has reached bottom of canvas
+    if (backgrounds[i].position.y >= canvas.height) {
+      // Update position of bg to be on top of last bg in backgrounds array
+      backgrounds[i].position.y = backgrounds[backgrounds.length - 1].position.y - backgrounds[i].size.h;
+      // put bg to the back of backgrounds array
+      const bottomBg = backgrounds.splice(i, 1);
+      backgrounds.push(bottomBg[0]);
+    }
+    backgrounds[i].update();
+  }
+}
+
 
 const projectiles = [];
 
@@ -53,12 +66,19 @@ window.addEventListener('mousedown',(event) => {
   }
 
   if (event.target != startGameBtn && isGameStarted === true) {
-    const projectile = new Projectile(hero.x + (hero.w / 2), hero.y + (hero.h / 2), 8, 'yellow', 10);
+    const projectile = new Projectile(
+      {
+        x: hero.position.x + (hero.size.w / 2), 
+        y: hero.position.y + (hero.size.h / 2)
+      }, 
+      8, 
+      'yellow', 
+      10
+    );
     projectiles.push(projectile)
 
     let heroShoot = new Audio('./sound/hero_shoot.wav');
     heroShoot.play();
-
   } 
 });
 
@@ -83,16 +103,19 @@ function spawnEnemies() {
    spawnInterval = setInterval( () => {
 
     // Enemy characteristics
-    const x = Math.random() * canvas.width;
-    const h = 64;
-    const y = 0 - h;
-    const w = 64
-    const v = 2;
-    const spriteW = 36;
-    const spriteH = 28 / 2;
+    const size = {w: 64, h: 64};
+    const position = {
+      x: Math.random() * canvas.width, 
+      y: 0 - size.h
+    };
+    const hitboxSize = {
+      w: 36,
+      h: 28 / 2
+    };
+    velocity = 2;
 
     // Spawns enemy
-    enemies.push(new Enemy(x, y, w, h, v, spriteW, spriteH));
+    enemies.push(new Enemy(position, size, hitboxSize, velocity));
   }, 1000)
 }
 
@@ -137,30 +160,12 @@ function resetPlayerKey(event) {
 
 
 function updateHeroPosition(key) {
-  const heroHitboxWDif = (hero.w - hero.spriteW) / 2;
-
-  if ( (key === 'd' || key === 'rightArrow') && hero.x + hero.w < canvas.width) {
-    hero.x += hero.v;
-    hero.hitboxX = hero.x + heroHitboxWDif;
+  if ( (key === 'd' || key === 'rightArrow') && hero.position.x + hero.size.w < canvas.width) {
+    hero.update('right');
   }
 
-  if ( (key === 'a' || key === 'leftArrow') && hero.x > 0) {
-    hero.x -= hero.v;
-    hero.hitboxX = hero.x + heroHitboxWDif;
-  }
-}
-
-function updateBgPos() {
-  for (let i = 0; i < backgrounds.length; i++) {
-    // If any background has reached bottom of canvas
-    if (backgrounds[i].y >= canvas.height) {
-      // Update position of bg to be on top of last bg in backgrounds array
-      backgrounds[i].y = backgrounds[backgrounds.length - 1].y - backgrounds[i].h;
-      // put bg to the back of backgrounds array
-      const bottomBg = backgrounds.splice(i, 1);
-      backgrounds.push(bottomBg[0]);
-    }
-    backgrounds[i].update();
+  if ( (key === 'a' || key === 'leftArrow') && hero.position.x > 0) {
+    hero.update('left')
   }
 }
 
@@ -175,30 +180,13 @@ function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Update backgrounds position
-  updateBgPos();
+  updateBackgroundPosition();
 
   // Updates hero position
-  updateHeroPosition(player.keyPressed);
-
-  // Draws hero
-  hero.img.src = './images/hero.png';
-  ctx.drawImage(hero.img, 0, 0, 64, 64, hero.x, hero.y, hero.w, hero.h);
-
-  ctx.strokeStyle = "green";
-  ctx.strokeRect(
-    hero.x,
-    hero.y,
-    hero.w,
-    hero.h
-  );
+  if (player.keyPressed) {updateHeroPosition(player.keyPressed)}
   
-  ctx.strokeStyle = "red";
-  ctx.strokeRect(
-    hero.hitboxX,
-    hero.hitboxY,
-    hero.spriteW,
-    hero.spriteH
-  );
+  // Draws hero
+  hero.draw();
 
   // Draws score
   ctx.fillStyle = score.color;
@@ -208,27 +196,26 @@ function animate() {
   // Loops through enemies array
   enemies.forEach((enemy, enemyIndex) => {
     // Removes enemies off screen
-    if (enemy.y < 0 - enemy.h) {
+    if (enemy.position.y < 0 - enemy.size.h) {
       setTimeout(() => {
         enemies.splice(enemyIndex, 1);
       }, 0)
     }
 
-    
     // Collision detection for hero
     if (
         (
           // if hero position is right of enemy
-          hero.hitboxX > enemy.hitboxX && Math.abs(hero.hitboxX - enemy.hitboxX) <= enemy.spriteW ||
+          hero.hitboxPosition.x > enemy.hitboxPosition.x && Math.abs(hero.hitboxPosition.x - enemy.hitboxPosition.x) <= enemy.hitboxSize.w ||
           // or, if hero position is left of enemy
-          hero.hitboxX < enemy.hitboxX && Math.abs(enemy.hitboxX - hero.hitboxX) <= hero.spriteW
+          hero.hitboxPosition.x < enemy.hitboxPosition.x && Math.abs(enemy.hitboxPosition.x - hero.hitboxPosition.x) <= hero.hitboxSize.w
         ) 
         && 
         (
           // if hero position is below enemy
-          hero.hitboxY > enemy.hitboxY && Math.abs(hero.hitboxY - enemy.hitboxY) <= enemy.spriteH ||
+          hero.hitboxPosition.y > enemy.hitboxPosition.y && Math.abs(hero.hitboxPosition.y - enemy.hitboxPosition.y) <= enemy.hitboxSize.h ||
           // or, if hero position is above enemy
-          hero.hitboxY < enemy.hitboxY && Math.abs(enemy.hitboxY - hero.hitboxY) <= hero.spriteH
+          hero.hitboxPosition.y < enemy.hitboxPosition.y && Math.abs(enemy.hitboxPosition.y - hero.hitboxPosition.y) <= hero.hitboxSize.h
         )
     ) {
         cancelAnimationFrame(animationId);
@@ -249,8 +236,8 @@ function animate() {
       // if projectile position is below enemy
       if ( 
           // if projectile position is below enemy
-          (projectile.y > enemy.hitboxY) && Math.abs( (projectile.y - projectile.r) - enemy.hitboxY) <= enemy.spriteH &&
-          (projectile.x + projectile.r) > enemy.hitboxX && (projectile.x - projectile.r) < (enemy.hitboxX + enemy.spriteW)
+          (projectile.position.y > enemy.hitboxPosition.y) && Math.abs( (projectile.position.y - projectile.radius) - enemy.hitboxPosition.y) <= enemy.hitboxSize.h &&
+          (projectile.position.x + projectile.radius) > enemy.hitboxPosition.x && (projectile.position.x - projectile.radius) < (enemy.hitboxPosition.x + enemy.hitboxSize.w)
           ) {
         enemies.splice(enemyIndex, 1);
         projectiles.splice(projectileIndex, 1);
@@ -267,7 +254,7 @@ function animate() {
   // Loop through projectiles array
   projectiles.forEach((projectile, index) => {
     // Removes projectiles off screen
-    if (projectile.y < 0 - projectile.r) {
+    if (projectile.position.y < 0 - projectile.radius) {
       setTimeout(() => {
         projectiles.splice(index, 1);
       }, 0)
@@ -281,15 +268,12 @@ function animate() {
 function resetGame() {
   enemies.length = 0;
   hero = new Hero(
-    canvas.width / 2 - 32, 
-    canvas.height - 144, 
-    64, 
-    64, 
-    1, 
-    60 / 2, 
-    52 / 2
+    {x: canvas.width / 2 - 32, y: canvas.height - 144}, // position
+    {w: 64, h: 64}, // size
+    {w: 60 / 2, h: 52 / 2}, // hitboxSize
+    2 // velocity
   );
   score.points = 0;
   backgrounds.length = 0;
-  createBgs(bgImages);
+  addBackgrounds(bgImages);
 }
