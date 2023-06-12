@@ -8,8 +8,8 @@ let isGameStarted = false;
 let soundtrack = new Audio('./sound/soundtrack.mp3');
 soundtrack.loop = true;
 let hero;
-// Game background will continuously loop through bgImages in order. Must have at least two image sources (strings) in array.
-const bgImages = [
+// Order in which background images appear (must be > 1 image)
+const bgImgReel = [
   './images/seamlessForest.jpg',
   './images/seamlessForest.jpg'
 ];
@@ -34,10 +34,10 @@ keyMap = {
 const backgrounds = [];
 
 function addBackgrounds(bgImgs) {
-  bgImgs.forEach((bg, index) => {
+  bgImgs.forEach((imgSource, index) => {
     const prevBg = index === 0 ? null : backgrounds[index - 1];
     const bgYcoordinate = prevBg ? prevBg.position.y - canvas.height : 0;
-    backgrounds.push(new Background({x: 0, y: bgYcoordinate}, {w: canvas.width, h: canvas.height}, 1));
+    backgrounds.push(new Background({x: 0, y: bgYcoordinate}, {w: canvas.width, h: canvas.height}, imgSource, 1));
   })
 }
 
@@ -47,9 +47,9 @@ function updateBackgroundPosition() {
     if (backgrounds[i].position.y >= canvas.height) {
       // Update position of bg to be on top of last bg in backgrounds array
       backgrounds[i].position.y = backgrounds[backgrounds.length - 1].position.y - backgrounds[i].size.h;
-      // put bg to the back of backgrounds array
-      const bottomBg = backgrounds.splice(i, 1);
-      backgrounds.push(bottomBg[0]);
+      // Put bg to the back of backgrounds array
+      const frontBg = backgrounds.splice(i, 1);
+      backgrounds.push(frontBg[0]);
     }
     backgrounds[i].update();
   }
@@ -275,5 +275,5 @@ function resetGame() {
   );
   score.points = 0;
   backgrounds.length = 0;
-  addBackgrounds(bgImages);
+  addBackgrounds(bgImgReel);
 }
