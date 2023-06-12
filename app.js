@@ -7,6 +7,7 @@ let scoreInterval;
 let isGameStarted = false;
 let soundtrack = new Audio('./sound/soundtrack.mp3');
 soundtrack.loop = true;
+let hero;
 // Game background will continuously loop through bgImages in order. Must have at least two image sources (strings) in array.
 const bgImages = [
   './images/seamlessForest.jpg',
@@ -17,13 +18,46 @@ const player = {
   keyPressed: null
 }
 
-const hero = {
-  img: new Image(),
-  x: canvas.width / 2 - 36,
-  y: canvas.height - 144,
-  w: 64,
-  h: 64,
-  v: 5
+class Hero {
+  constructor(x, y, w, h, v, spriteW, spriteH) {
+    this.img = new Image();
+    this.img.src = './images/hero.png';
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.v = v;
+    this.spriteW = spriteW;
+    this.spriteH = spriteH;
+    this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
+    this.hitboxY = this.y + ((this.h - this.spriteH) / 2);
+  }
+
+  draw() {
+    ctx.drawImage(this.img, 0, 0, 64, 64, this.x, this.y, this.w, this.h);
+
+    ctx.strokeStyle = "green";
+    ctx.strokeRect(
+      this.x,
+      this.y,
+      this.w,
+      this.h
+    )
+
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(
+      this.hitboxX, 
+      this.hitboxY, 
+      this.spriteW, 
+      this.spriteH
+    );
+  }
+  
+  update() {
+    this.draw();
+    this.x = this.x + this.v;
+    this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
+  }
 }
 
 const score = {
@@ -53,20 +87,34 @@ class Enemy {
     this.v = v;
     this.spriteW = spriteW;
     this.spriteH = spriteH;
-    //                 64 - 30 = 34 / 2 = 17
-    this.hitboxWDif = (w - spriteW) / 2;
-    this.hitboxHDif = (h - spriteH) / 2;
+    this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
+    this.hitboxY = this.y + ((this.h - this.spriteH) / 2);
   }
-
-  
 
   draw() {
     ctx.drawImage(this.img, 192, 0, 64, 64, this.x, this.y, this.w, this.h);
+
+    ctx.strokeStyle = "green";
+    ctx.strokeRect(
+      this.x,
+      this.y,
+      this.w,
+      this.h
+    )
+
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(
+      this.hitboxX, 
+      this.hitboxY, 
+      this.spriteW, 
+      this.spriteH
+    );
   }
   
   update() {
     this.draw();
     this.y = this.y + this.v;
+    this.hitboxY = this.y + ((this.h - this.spriteH) / 2);
   }
 }
 
@@ -169,15 +217,14 @@ function spawnEnemies() {
     const h = 64;
     const y = 0 - h;
     const w = 64
-    const v = 5;
-    const sw = 36;
-    const sh = 28;
+    const v = 2;
+    const spriteW = 36;
+    const spriteH = 28 / 2;
 
     // Spawns enemy
-    enemies.push(new Enemy(x,y,w,h,v,sw,sh));
+    enemies.push(new Enemy(x, y, w, h, v, spriteW, spriteH));
   }, 1000)
 }
-
 
 // Event listener to move player
 document.addEventListener("keydown", updatePlayerKey);
@@ -220,12 +267,16 @@ function resetPlayerKey(event) {
 
 
 function updateHeroPosition(key) {
+  const heroHitboxWDif = (hero.w - hero.spriteW) / 2;
+
   if ( (key === 'd' || key === 'rightArrow') && hero.x + hero.w < canvas.width) {
     hero.x += hero.v;
+    hero.hitboxX = hero.x + heroHitboxWDif;
   }
 
   if ( (key === 'a' || key === 'leftArrow') && hero.x > 0) {
     hero.x -= hero.v;
+    hero.hitboxX = hero.x + heroHitboxWDif;
   }
 }
 
@@ -245,6 +296,8 @@ function updateBgPos() {
 
 let animationId;
 
+// canvas.addEventListener('mousemove', event => console.log(event.clientY))
+
 function animate() {
   animationId = requestAnimationFrame(animate);
 
@@ -261,6 +314,22 @@ function animate() {
   hero.img.src = './images/hero.png';
   ctx.drawImage(hero.img, 0, 0, 64, 64, hero.x, hero.y, hero.w, hero.h);
 
+  ctx.strokeStyle = "green";
+  ctx.strokeRect(
+    hero.x,
+    hero.y,
+    hero.w,
+    hero.h
+  );
+  
+  ctx.strokeStyle = "red";
+  ctx.strokeRect(
+    hero.hitboxX,
+    hero.hitboxY,
+    hero.spriteW,
+    hero.spriteH
+  );
+
   // Draws score
   ctx.fillStyle = score.color;
   ctx.font = `${score.fontSize}px ${score.fontFamily}`;
@@ -275,20 +344,21 @@ function animate() {
       }, 0)
     }
 
+    
     // Collision detection for hero
     if (
         (
           // if hero position is right of enemy
-          (hero.x > enemy.x) && Math.abs(hero.x - enemy.x) <= enemy.w - enemy.hitboxWDif ||
+          hero.hitboxX > enemy.hitboxX && Math.abs(hero.hitboxX - enemy.hitboxX) <= enemy.spriteW ||
           // or, if hero position is left of enemy
-          (hero.x < enemy.x) && Math.abs(enemy.x - hero.x) <= hero.w - enemy.hitboxWDif
+          hero.hitboxX < enemy.hitboxX && Math.abs(enemy.hitboxX - hero.hitboxX) <= hero.spriteW
         ) 
         && 
         (
           // if hero position is below enemy
-          (hero.y > enemy.y) && Math.abs(hero.y - enemy.y) <= enemy.h - enemy.hitboxHDif ||
+          hero.hitboxY > enemy.hitboxY && Math.abs(hero.hitboxY - enemy.hitboxY) <= enemy.spriteH ||
           // or, if hero position is above enemy
-          (hero.y < enemy.y) && Math.abs(enemy.y - hero.y) <= hero.h
+          hero.hitboxY < enemy.hitboxY && Math.abs(enemy.hitboxY - hero.hitboxY) <= hero.spriteH
         )
     ) {
         cancelAnimationFrame(animationId);
@@ -340,7 +410,15 @@ function animate() {
 
 function resetGame() {
   enemies.length = 0;
-  hero.x = canvas.width / 2 - 75;
+  hero = new Hero(
+    canvas.width / 2 - 32, 
+    canvas.height - 144, 
+    64, 
+    64, 
+    1, 
+    60 / 2, 
+    52 / 2
+  );
   score.points = 0;
   backgrounds.length = 0;
   createBgs(bgImages);
