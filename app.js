@@ -379,8 +379,8 @@ function animate() {
       // if projectile position is below enemy
       if ( 
           // if projectile position is below enemy
-          (projectile.y > enemy.y) && Math.abs( (projectile.y - projectile.r) - enemy.y) <= enemy.h &&
-          (projectile.x + projectile.r) > enemy.x && (projectile.x - projectile.r) < (enemy.x + enemy.w)
+          (projectile.y > enemy.hitboxY) && Math.abs( (projectile.y - projectile.r) - enemy.hitboxY) <= enemy.spriteH &&
+          (projectile.x + projectile.r) > enemy.hitboxX && (projectile.x - projectile.r) < (enemy.hitboxX + enemy.spriteW)
           ) {
         enemies.splice(enemyIndex, 1);
         projectiles.splice(projectileIndex, 1);
