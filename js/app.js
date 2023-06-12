@@ -13,53 +13,9 @@ const bgImages = [
   './images/seamlessForest.jpg',
   './images/seamlessForest.jpg'
 ];
-
 const player = {
   keyPressed: null
 }
-
-class Hero {
-  constructor(x, y, w, h, v, spriteW, spriteH) {
-    this.img = new Image();
-    this.img.src = './images/hero.png';
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.v = v;
-    this.spriteW = spriteW;
-    this.spriteH = spriteH;
-    this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
-    this.hitboxY = this.y + ((this.h - this.spriteH) / 2);
-  }
-
-  draw() {
-    ctx.drawImage(this.img, 0, 0, 64, 64, this.x, this.y, this.w, this.h);
-
-    ctx.strokeStyle = "green";
-    ctx.strokeRect(
-      this.x,
-      this.y,
-      this.w,
-      this.h
-    )
-
-    ctx.strokeStyle = "red";
-    ctx.strokeRect(
-      this.hitboxX, 
-      this.hitboxY, 
-      this.spriteW, 
-      this.spriteH
-    );
-  }
-  
-  update() {
-    this.draw();
-    this.x = this.x + this.v;
-    this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
-  }
-}
-
 const score = {
   points: 0,
   x: 15,
@@ -68,97 +24,11 @@ const score = {
   fontSize: 24,
   fontFamily: 'Arial'
 }
-
 keyMap = {
   leftArrow: 37,
   rightArrow: 39,
   a: 65,
   d: 68
-}
-
-class Enemy {
-  constructor(x, y, w, h, v, spriteW, spriteH) {
-    this.img = new Image();
-    this.img.src = './images/enemies.png';
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.v = v;
-    this.spriteW = spriteW;
-    this.spriteH = spriteH;
-    this.hitboxX = this.x + ((this.w - this.spriteW) / 2);
-    this.hitboxY = this.y + ((this.h - this.spriteH) / 2);
-  }
-
-  draw() {
-    ctx.drawImage(this.img, 192, 0, 64, 64, this.x, this.y, this.w, this.h);
-
-    ctx.strokeStyle = "green";
-    ctx.strokeRect(
-      this.x,
-      this.y,
-      this.w,
-      this.h
-    )
-
-    ctx.strokeStyle = "red";
-    ctx.strokeRect(
-      this.hitboxX, 
-      this.hitboxY, 
-      this.spriteW, 
-      this.spriteH
-    );
-  }
-  
-  update() {
-    this.draw();
-    this.y = this.y + this.v;
-    this.hitboxY = this.y + ((this.h - this.spriteH) / 2);
-  }
-}
-
-class Projectile {
-  constructor(x, y, r, color, v) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.color = color;
-    this.v = v;
-  }
-
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-  }
-
-  update() {
-    this.draw();
-    this.y = this.y - this.v;
-  }
-}
-
-
-class Background {
-  constructor(imgEl, x, y, w, h, v) {
-    this.imgEl = imgEl;
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.v = v;
-  }
-
-  draw() {
-    ctx.drawImage(this.imgEl, this.x, this.y, this.w, this.h);
-  }
-
-  update() {
-    this.draw();
-    this.y = this.y + this.v;
-  }
 }
 
 const backgrounds = [];
