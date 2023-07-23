@@ -21,23 +21,23 @@ class Sprite {
          this.size.h
       );
 
-      ctx.strokeStyle = "green";
-      ctx.strokeRect(
-         this.position.x,
-         this.position.y,
-         this.size.w,
-         this.size.h
-      )
+      // Outlines the sprite image and hitbox for easy testing/dev
+      // ctx.strokeStyle = "green";
+      // ctx.strokeRect(
+      //    this.position.x,
+      //    this.position.y,
+      //    this.size.w,
+      //    this.size.h
+      // )
 
-      if (this.hitboxPosition && this.hitboxSize) {
-         ctx.strokeStyle = "red";
-         ctx.strokeRect(
-            this.hitboxPosition.x, 
-            this.hitboxPosition.y, 
-            this.hitboxSize.w, 
-            this.hitboxSize.h
-         );
-      }
-      
+      // if (this.hitboxPosition && this.hitboxSize) {
+      //    ctx.strokeStyle = "red";
+      //    ctx.strokeRect(
+      //       this.hitboxPosition.x, 
+      //       this.hitboxPosition.y, 
+      //       this.hitboxSize.w, 
+      //       this.hitboxSize.h
+      //    );
+      // }
    }
 }

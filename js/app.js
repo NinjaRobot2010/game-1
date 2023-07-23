@@ -4,14 +4,16 @@ const menuEl = document.querySelector(".startMenu");
 const pointsEl = document.querySelector("#points");
 const startGameBtn = document.querySelector("#startGameBtn");
 let scoreInterval;
-let isGameStarted = false;
+let isGameOn = false;
 let soundtrack = new Audio('./sound/soundtrack.mp3');
 soundtrack.loop = true;
 let hero;
 // Order in which background images appear (must be > 1 image)
 const bgImgReel = [
-  './images/seamlessForest.jpg',
-  './images/seamlessForest.jpg'
+  './images/space_background-0.png',
+  './images/space_background-1.png',
+  './images/space_background-2.png',
+  './images/space_background-3.png'
 ];
 const player = {
   keyPressed: null
@@ -22,8 +24,10 @@ const score = {
   y: 30,
   color: 'white',
   fontSize: 24,
-  fontFamily: 'Arial'
+  fontFamily: 'Arial',
+  level: 0
 }
+
 keyMap = {
   leftArrow: 37,
   rightArrow: 39,
@@ -65,15 +69,15 @@ window.addEventListener('mousedown',(event) => {
     menuEl.style.display = "none";
   }
 
-  if (event.target != startGameBtn && isGameStarted === true) {
+  if (event.target != startGameBtn && isGameOn === true) {
     const projectile = new Projectile(
       {
         x: hero.position.x + (hero.size.w / 2), 
         y: hero.position.y + (hero.size.h / 2)
       }, 
-      8, 
+      5, 
       'yellow', 
-      10
+      6
     );
     projectiles.push(projectile)
 
@@ -84,11 +88,10 @@ window.addEventListener('mousedown',(event) => {
 
 function startNewGame() {
   resetGame();
+  isGameOn = true;
   animate();
-  spawnEnemies();
   soundtrack.play();
-  isGameStarted = true;
-  
+
   // Updates score
   scoreInterval = setInterval(() => {
     score.points += 1
@@ -99,9 +102,10 @@ function startNewGame() {
 const enemies = [];
 let spawnInterval;
 
-function spawnEnemies() {
-   spawnInterval = setInterval( () => {
-
+function spawnEnemies(interval, velocity = {x:0, y:0}) {
+  console.log('spawnEnemies executed');
+  
+  spawnInterval = setInterval( () => {
     // Enemy characteristics
     const size = {w: 64, h: 64};
     const position = {
@@ -112,11 +116,10 @@ function spawnEnemies() {
       w: 36,
       h: 28 / 2
     };
-    velocity = 2;
 
     // Spawns enemy
     enemies.push(new Enemy(position, size, hitboxSize, velocity));
-  }, 1000)
+  }, interval)
 }
 
 // Event listener to move player
@@ -182,11 +185,7 @@ function animate() {
   // Update backgrounds position
   updateBackgroundPosition();
 
-  // Updates hero position
-  if (player.keyPressed) {updateHeroPosition(player.keyPressed)}
-  
-  // Draws hero
-  hero.draw();
+
 
   // Draws score
   ctx.fillStyle = score.color;
@@ -227,7 +226,7 @@ function animate() {
         soundtrack.currentTime = 0;
         let heroExplosion = new Audio('./sound/hero_explosion.wav');
         heroExplosion.play();
-        isGameStarted = false;
+        isGameOn = false;
     }
 
      // Collision detection for projectiles
@@ -248,7 +247,7 @@ function animate() {
     })
 
     // Draws enemy and updates their position
-    enemy.update();
+    enemy.update(hero.position);
   })
 
   // Loop through projectiles array
@@ -263,17 +262,83 @@ function animate() {
     // Draws projectile and updates their position
     projectile.update();
   })
+
+
+  // Updates hero position
+  if (player.keyPressed) {updateHeroPosition(player.keyPressed)}
+  
+  // Draws hero
+  hero.draw();
+
+  manageDifficulty();
+}
+
+function manageDifficulty() {
+    // level 1
+    if (score.points >= 0 && score.level < 1) {
+      score.level++;
+      spawnEnemies(1000, {x:1, y:2});
+    // level 2
+    } else if (score.points >= 100 && score.level < 2) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(750, {x:1, y:2});
+      // level 3
+    } else if (score.points >= 250 && score.level < 3) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(500, {x:1, y:2});
+      // level 4
+    } else if (score.points >= 500 && score.level < 4) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(250, {x:1, y:2});
+      // level 5
+    } else if (score.points >= 1000 && score.level < 5) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(250, {x:1, y:3});
+      // level 6
+    } else if (score.points >= 2000 && score.level < 6) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(250, {x:1, y:3});
+      // level 7
+    } else if (score.points >= 3000 && score.level < 7) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(200, {x:1, y:4});
+      // level 8
+    } else if (score.points >= 3500 && score.level < 8) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(150, {x:1, y:4});
+    }
+    // level 9
+    else if (score.points >= 4000 && score.level < 9) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(75, {x:1, y:5});
+    }
+    // level 10
+    else if (score.points >= 4500 && score.level < 10) {
+      clearInterval(spawnInterval);
+      score.level++;
+      spawnEnemies(50, {x:1, y:5});
+    }
 }
 
 function resetGame() {
   enemies.length = 0;
+  projectiles.length = 0;
   hero = new Hero(
     {x: canvas.width / 2 - 32, y: canvas.height - 144}, // position
     {w: 64, h: 64}, // size
     {w: 60 / 2, h: 52 / 2}, // hitboxSize
-    2 // velocity
+    {x:3, y:0} // velocity
   );
   score.points = 0;
+  score.level = 0;
   backgrounds.length = 0;
   addBackgrounds(bgImgReel);
 }
