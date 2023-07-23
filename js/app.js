@@ -1,5 +1,6 @@
 const canvas = document.getElementById("Game");
 const ctx = canvas.getContext("2d");
+const title = document.querySelector("#title");
 const menuEl = document.querySelector(".startMenu");
 const pointsEl = document.querySelector("#points");
 const startGameBtn = document.querySelector("#startGameBtn");
@@ -67,6 +68,7 @@ window.addEventListener('mousedown',(event) => {
   if (event.target === startGameBtn) {
     startNewGame();
     menuEl.style.display = "none";
+    title.style.display = "none";
   }
 
   if (event.target != startGameBtn && isGameOn === true) {

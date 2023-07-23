@@ -29,13 +29,24 @@ body {
   
 }
 
+#title {
+  color: rgb(4, 149, 198);
+  position: absolute;
+  z-index: 100;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 20%;
+  font-family: 'Audiowide', cursive;
+  font-size: 60px;
+}
+
  .startMenu {
    background-color: #c4c4c4;
    border: 6px solid #484848;
    position: absolute;
    z-index: 100;
    left: 50%;
-   top: 50%;
+   top: 60%;
    transform: translate(-50%, -50%);
    padding: 30px;
    text-align: center;
